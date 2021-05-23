@@ -58,7 +58,7 @@ def best_5(user_name):
     d.drop_duplicates(inplace=True)
     # Applying tfidf
     tv_reviews=tfidf.transform(d['reviews_text_title'].to_list())
-    return tv_reviews.shape
+    return list(tv_reviews.shape)
     # predicting using XGBoost
     #d['final_pred']=xg_pickle_model.predict(tv_reviews)
     #return d['final_pred'].to_list()[:5]
