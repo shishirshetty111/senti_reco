@@ -54,7 +54,7 @@ def best_5(user_name):
     # merge with main dataframe to get review_text and review_title
     d = pd.merge(d,ratings.loc[:,['item_id','name']],left_on='item_id',right_on='item_id', how = 'left')
     d.drop_duplicates(inplace=True)
-    return d
+    return d['name'].to_list()
     #d1 = pd.merge(d,sent_df,left_on=['name'],right_on=['name'],how = 'inner')
     #d1.drop_duplicates(inplace=True)
     # Applying tfidf
