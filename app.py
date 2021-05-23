@@ -51,22 +51,23 @@ def best_5(user_name):
     ratings.drop_duplicates(subset=['reviews_username','name'],inplace=True)
     user_input=ratings.loc[ratings['reviews_username']==user_name]['user_id'].reset_index(drop=True)[0]
     d = reco_pickle_model.loc[user_input].sort_values(ascending=False)[0:20]
+    return d
     # merge with main dataframe to get review_text and review_title
-    d = pd.merge(d,ratings.loc[:,['item_id','name']],left_on='item_id',right_on='item_id', how = 'left')
-    d.drop_duplicates(inplace=True)
-    d1 = pd.merge(d,sent_df,left_on=['name'],right_on=['name'],how = 'inner')
-    d1.drop_duplicates(inplace=True)
+    #d = pd.merge(d,ratings.loc[:,['item_id','name']],left_on='item_id',right_on='item_id', how = 'left')
+    #d.drop_duplicates(inplace=True)
+    #d1 = pd.merge(d,sent_df,left_on=['name'],right_on=['name'],how = 'inner')
+    #d1.drop_duplicates(inplace=True)
     # Applying tfidf
-    tv_reviews=tfidf.transform(d1['reviews_text_title'].to_list())
+    #tv_reviews=tfidf.transform(d1['reviews_text_title'].to_list())
     # predicting using XGBoost
-    d1['final_pred']=xg_pickle_model.predict(tv_reviews)
+    #d1['final_pred']=xg_pickle_model.predict(tv_reviews)
     # calculation % of 1's in each recommended item
-    final_df=d1.loc[:,['name','final_pred']].groupby(by='name').agg(['sum','count'])
-    final_df['%']=final_df['final_pred']['sum']/final_df['final_pred']['count']
+    #final_df=d1.loc[:,['name','final_pred']].groupby(by='name').agg(['sum','count'])
+    #final_df['%']=final_df['final_pred']['sum']/final_df['final_pred']['count']
     #Sorting it based on %
-    final_df=final_df.sort_values(by='%',ascending=False)
+    #final_df=final_df.sort_values(by='%',ascending=False)
     # final filtered top5 recommendation
-    return final_df.index[:5].to_list()
+    #return final_df.index[:5].to_list()
 
 
 @app.route("/")
@@ -76,9 +77,10 @@ def home():
 @app.route("/predict", methods=["POST"])
 def predict():
     if (request.method == "POST"):
-        #user_input = [x for x in request.form.values()][0]
+        user_input = [x for x in request.form.values()][0]
         # final filtered top5 recommendation
-        return render_template('index.html', prediction_text='Top 5 Recommendation', my_list=[1,2,3,4,5])
+        output=best_5(user_input)
+        return render_template('index.html', prediction_text='Top 5 Recommendation', my_list=output)
     else :
         return render_template('index.html')
 
