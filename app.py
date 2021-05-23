@@ -51,10 +51,10 @@ def best_5(user_name):
     ratings.drop_duplicates(subset=['reviews_username','name'],inplace=True)
     user_input=ratings.loc[ratings['reviews_username']==user_name]['user_id'].reset_index(drop=True)[0]
     d = reco_pickle_model.loc[user_input].sort_values(ascending=False)[0:20]
-    return d
     # merge with main dataframe to get review_text and review_title
-    #d = pd.merge(d,ratings.loc[:,['item_id','name']],left_on='item_id',right_on='item_id', how = 'left')
-    #d.drop_duplicates(inplace=True)
+    d = pd.merge(d,ratings.loc[:,['item_id','name']],left_on='item_id',right_on='item_id', how = 'left')
+    d.drop_duplicates(inplace=True)
+    return d
     #d1 = pd.merge(d,sent_df,left_on=['name'],right_on=['name'],how = 'inner')
     #d1.drop_duplicates(inplace=True)
     # Applying tfidf
