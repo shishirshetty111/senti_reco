@@ -10,7 +10,7 @@ app = Flask(__name__)
 df=pd.read_csv('dataset/sample30.csv')
 # XGBoost Model for final prediction
 xg_pickle_model= xgb.XGBClassifier()
-xg_pickle_model.load_model('pickle/xg_best.bin')
+xg_pickle_model.load_model('pickle/xgboost_best.bin')
 #Tfidf vectorizer
 with gzip.open('pickle/tfidf.pkl', 'rb') as f:
     p = pickle.Unpickler(f)
@@ -58,10 +58,9 @@ def best_5(user_name):
     d.drop_duplicates(inplace=True)
     # Applying tfidf
     tv_reviews=tfidf.transform(d['reviews_text_title'].to_list())
-    return list(tv_reviews.shape)
     # predicting using XGBoost
-    #d['final_pred']=xg_pickle_model.predict(tv_reviews)
-    #return d['final_pred'].to_list()[:5]
+    d['final_pred']=xg_pickle_model.predict(tv_reviews)
+    return d['final_pred'].to_list()[:5]
     # calculation % of 1's in each recommended item
     #final_df=d1.loc[:,['name','final_pred']].groupby(by='name').agg(['sum','count'])
     #final_df['%']=final_df['final_pred']['sum']/final_df['final_pred']['count']
