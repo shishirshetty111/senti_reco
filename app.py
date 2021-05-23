@@ -56,11 +56,11 @@ def best_5(user_name):
     d.drop_duplicates(inplace=True)
     d = pd.merge(d,sent_df,left_on=['name'],right_on=['name'],how = 'inner')
     d.drop_duplicates(inplace=True)
-    return d['reviews_text_title'].to_list()[:10]
     # Applying tfidf
-    #tv_reviews=tfidf.transform(d1['reviews_text_title'].to_list())
+    tv_reviews=tfidf.transform(d['reviews_text_title'].to_list())
     # predicting using XGBoost
-    #d1['final_pred']=xg_pickle_model.predict(tv_reviews)
+    d['final_pred']=xg_pickle_model.predict(tv_reviews)
+    return d['final_pred'].to_list()[:5]
     # calculation % of 1's in each recommended item
     #final_df=d1.loc[:,['name','final_pred']].groupby(by='name').agg(['sum','count'])
     #final_df['%']=final_df['final_pred']['sum']/final_df['final_pred']['count']
