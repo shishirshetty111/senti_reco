@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Model Deployment</title>
+    <style>
+      body {
+        font-family: 'Tangerine', serif;
+        font-size: 28px;
+      }
+    </style>
+
+
+</head>
+
+<body align="center" style="background-color:green;">
+ <div class="login">
+	<h1 style="text-align:center">Sentiment Based Product Recommendation</h1>
+
+    <form align="center" action="{{ url_for('predict')}}"method="post">
+    	<input type="text" style="text-align:center" name="user_name" placeholder="user_name" required="required" />
+        <br>
+
+        <button align="center" type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+    </form>
+
+   <br>
+   <br>
+   {{ prediction_text }}
+   <br>
+   <table align="center" border="2">
+   {% for i in my_list %}
+   <tr>
+       <td>{{ i }}</td>
+   </tr>
+    {% endfor %}
+  </table>
+ </div>
+</body>
+</html>
