@@ -5,6 +5,7 @@ import xgboost as xgb
 from sklearn.preprocessing import LabelEncoder
 import gzip, pickle
 
+
 app = Flask(__name__)
 df=pd.read_csv('dataset/sample30.csv')
 # XGBoost Model for final prediction
@@ -60,7 +61,7 @@ def best_5(user_name):
     # predicting using XGBoost
     d1['final_pred']=xg_pickle_model.predict(tv_reviews)
     # calculation % of 1's in each recommended item
-    final_df=d1[['name','final_pred']].groupby(by='name').agg(['sum','count'])
+    final_df=d1.loc[:,['name','final_pred']].groupby(by='name').agg(['sum','count'])
     final_df['%']=final_df['final_pred']['sum']/final_df['final_pred']['count']
     #Sorting it based on %
     final_df=final_df.sort_values(by='%',ascending=False)
@@ -75,10 +76,9 @@ def home():
 @app.route("/predict", methods=["POST"])
 def predict():
     if (request.method == "POST"):
-        user_input = [x for x in request.form.values()][0]
+        #user_input = [x for x in request.form.values()][0]
         # final filtered top5 recommendation
-        output = best_5(user_input)
-        return render_template('index.html', prediction_text='Top 5 Recommendation', my_list=output)
+        return render_template('index.html', prediction_text='Top 5 Recommendation', my_list=[1,2,3,4,5])
     else :
         return render_template('index.html')
 
