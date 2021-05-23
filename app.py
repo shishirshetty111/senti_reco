@@ -37,27 +37,21 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, test_s
 
 xg_pickle_model._le = LabelEncoder().fit(y_test)
 
-#Recommendation Engine
-
-# filtering columns for recommendation engine
-ratings=df[['reviews_username','name','reviews_rating']]
-
-
-# giving user id and item id
-ratings['user_id'] = ratings.groupby(ratings['reviews_username'].tolist(), sort=False).ngroup() + 1
-ratings['item_id'] = ratings.groupby(ratings['name'].tolist(), sort=False).ngroup() + 1
-
-# dropping rows with null values and dropping duplicates
-ratings=ratings.dropna()
-ratings=ratings.drop_duplicates(subset=['reviews_username','name'])
 
 
 ## Filtering 20 to 5 recommendations based on % of positive predictions
 def best_5(user_name):
+    ratings=df.loc[:,['reviews_username','name','reviews_rating']]
+    # giving user id and item id
+    ratings['user_id'] = ratings.groupby(ratings.loc[:,'reviews_username'].tolist(), sort=False).ngroup() + 1
+    ratings['item_id'] = ratings.groupby(ratings.loc[:,'name'].tolist(), sort=False).ngroup() + 1
+    # dropping rows with null values and dropping duplicates
+    ratings.dropna(inplace=True)
+    ratings.drop_duplicates(subset=['reviews_username','name'],inplace=True)
     user_input=ratings.loc[ratings['reviews_username']==user_name]['user_id'].reset_index(drop=True)[0]
     d = reco_pickle_model.loc[user_input].sort_values(ascending=False)[0:20]
     # merge with main dataframe to get review_text and review_title
-    d = pd.merge(d,ratings[['item_id','name']],left_on='item_id',right_on='item_id', how = 'left')
+    d = pd.merge(d,ratings.loc[:,['item_id','name']],left_on='item_id',right_on='item_id', how = 'left')
     d.drop_duplicates(inplace=True)
     d1 = pd.merge(d,sent_df,left_on=['name'],right_on=['name'],how = 'inner')
     d1.drop_duplicates(inplace=True)
