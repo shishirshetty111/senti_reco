@@ -54,9 +54,9 @@ def best_5(user_name):
     # merge with main dataframe to get review_text and review_title
     d = pd.merge(d,ratings.loc[:,['item_id','name']],left_on='item_id',right_on='item_id', how = 'left')
     d.drop_duplicates(inplace=True)
-    return d['name'].to_list()
-    #d1 = pd.merge(d,sent_df,left_on=['name'],right_on=['name'],how = 'inner')
-    #d1.drop_duplicates(inplace=True)
+    d = pd.merge(d,sent_df,left_on=['name'],right_on=['name'],how = 'inner')
+    d.drop_duplicates(inplace=True)
+    return d['reviews_text_title'].to_list()[:10]
     # Applying tfidf
     #tv_reviews=tfidf.transform(d1['reviews_text_title'].to_list())
     # predicting using XGBoost
